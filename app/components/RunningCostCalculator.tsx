@@ -162,7 +162,7 @@ const RunningCostCalculator: FC = () => {
         <div className="w-full max-w-3xl mx-auto p-6 md:p-8 bg-white shadow-2xl rounded-2xl">
             <h1 className="text-3xl md:text-4xl font-bold mb-2 text-slate-800">Appliance Running Cost & CO2 Calculator</h1>
             <p className="text-sm text-slate-500 mb-8">
-                Estimate your appliance's annual running cost and CO2 emissions.
+                Estimate your appliance&apos;s annual running cost and CO2 emissions.
             </p>
 
             <div className="space-y-6">
@@ -253,7 +253,7 @@ const RunningCostCalculator: FC = () => {
             
             {/* --- Disclaimer --- */}
             <div className="mt-10 text-xs text-slate-400 text-center">
-                <p><strong>Disclaimer:</strong> This calculator provides an estimate for informational purposes only. Actual costs and emissions may vary. Always consult your appliance's official energy label and your energy provider for the most accurate information.</p>
+                <p><strong>Disclaimer:</strong> This calculator provides an estimate for informational purposes only. Actual costs and emissions may vary. Always consult your appliance&apos;s official energy label and your energy provider for the most accurate information.</p>
             </div>
         </div>
         <style>
@@ -272,4 +272,3 @@ const RunningCostCalculator: FC = () => {
 };
 
 export default RunningCostCalculator;
-
