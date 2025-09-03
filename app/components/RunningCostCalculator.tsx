@@ -84,7 +84,7 @@ const usageHelpContent: HelpContent = {
 
 // --- Reusable SVG Icons ---
 const InfoIcon: FC<{ className?: string }> = ({ className }) => (
-    <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg className={className} xmlns="http://www.w.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
 );
@@ -179,7 +179,6 @@ const RunningCostCalculator: FC = () => {
 
     if (!selectedUnit || !selectedCountryData) return;
     
-    // Convert weekly usage to annual usage
     let annualUsage = 0;
     if (selectedUnit.prompt) {
         const weeklyUsage = parseFloat(estimatedUsage);
@@ -187,16 +186,13 @@ const RunningCostCalculator: FC = () => {
             setError("Please enter your estimated weekly usage.");
             return;
         }
-        annualUsage = weeklyUsage * 52; // 52 weeks in a year
+        annualUsage = weeklyUsage * 52;
     }
 
-    // Calculate total kWh for the year
     const usageFactor = selectedUnit.value === 'per_year' ? 1 : annualUsage / selectedUnit.base;
     const totalKWh = consumption * usageFactor;
     
-    // Formula for running cost
     setAnnualCost(totalKWh * price);
-    // Formula for Co2 calculator
     setCo2Emissions(totalKWh * selectedCountryData.emissionFactor);
   };
 
@@ -235,20 +231,34 @@ const RunningCostCalculator: FC = () => {
                             </select>
                         </div>
 
-                        {/* Energy Consumption */}
-                        <div>
-                            <label htmlFor="energy-consumption" className="block text-sm font-medium text-slate-700 mb-1">Energy Consumption from Label (kWh)</label>
-                            <input type="number" min="0" id="energy-consumption" value={energyConsumption} onChange={(e) => setEnergyConsumption(e.target.value)} className="mt-1 block w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., 54"/>
-                        </div>
-                        
-                        {/* Unit of Consumption */}
+                        {/* --- NUOVO Gruppo Input Combinato --- */}
                         <div className="md:col-span-2">
-                            <label htmlFor="consumption-unit" className="block text-sm font-medium text-slate-700 mb-1">Unit of Energy Consumption</label>
-                            <select id="consumption-unit" value={consumptionUnit} onChange={handleUnitChange} className="mt-1 block w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                                {consumptionUnitOptions.map(unit => <option key={unit.value} value={unit.value}>{unit.label}</option>)}
-                            </select>
+                            <label htmlFor="energy-consumption" className="block text-sm font-medium text-slate-700 mb-1">
+                                Energy Consumption from Label
+                            </label>
+                            <div className="mt-1 flex rounded-lg shadow-sm border border-slate-300 focus-within:ring-2 focus-within:ring-blue-500 transition">
+                                <input
+                                    type="number"
+                                    min="0"
+                                    id="energy-consumption"
+                                    value={energyConsumption}
+                                    onChange={(e) => setEnergyConsumption(e.target.value)}
+                                    className="flex-grow p-3 border-none rounded-l-lg focus:ring-0"
+                                    placeholder="e.g., 54"
+                                />
+                                <select
+                                    id="consumption-unit"
+                                    value={consumptionUnit}
+                                    onChange={handleUnitChange}
+                                    className="p-3 border-none border-l border-slate-300 bg-slate-50 rounded-r-lg focus:ring-0"
+                                    aria-label="Unit of Energy Consumption"
+                                >
+                                    {consumptionUnitOptions.map(unit => <option key={unit.value} value={unit.value}>{unit.label}</option>)}
+                                </select>
+                            </div>
                         </div>
-
+                        {/* --- FINE Gruppo Input Combinato --- */}
+                        
                         {/* Estimated Usage (Conditional) */}
                         {selectedUnit?.prompt && (
                             <div className="md:col-span-2">
@@ -280,14 +290,12 @@ const RunningCostCalculator: FC = () => {
                         {annualCost !== null && co2Emissions !== null && (
                             <div className="mt-6 p-6 bg-green-50 border-2 border-dashed border-green-200 rounded-lg animate-fade-in">
                                 <div className="flex flex-col md:flex-row justify-center items-center md:divide-x-2 md:divide-green-200">
-                                    {/*-- Cost Result --*/}
                                     <div className="p-4 w-full md:w-1/2 text-center">
                                         <p className="text-lg text-slate-600">Estimated Annual Cost</p>
-                                        <p className="text-4xl md:text-5xl font-extrabold text-green-600 my-2 flex items-center justify-center gap-2">
+                                        <p className="text-4xl md:text-5xl font-extrabold text-green-600 my-2">
                                             €{annualCost.toFixed(2)}
                                         </p>
                                     </div>
-                                    {/*-- CO2 Result --*/}
                                     <div className="p-4 w-full md:w-1/2 text-center">
                                         <p className="text-lg text-slate-600">Estimated CO2 Emissions</p>
                                         <p className="text-4xl md:text-5xl font-extrabold text-green-600 my-2 flex items-center justify-center gap-2">
@@ -309,14 +317,8 @@ const RunningCostCalculator: FC = () => {
             </div>
             <style>
             {`
-              @keyframes fade-in {
-                from { opacity: 0; }
-                to { opacity: 1; }
-              }
-              @keyframes fade-in-up {
-                from { opacity: 0; transform: translateY(20px) scale(0.95); }
-                to { opacity: 1; transform: translateY(0) scale(1); }
-              }
+              @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
               .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
               .animate-fade-in-up { animation: fade-in-up 0.3s ease-out forwards; }
             `}
